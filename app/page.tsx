@@ -5,9 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
-import { Globe, Clock, MapPin, Shield, Smartphone, Menu } from "lucide-react"
+import { Globe, Clock, MapPin, Shield } from "lucide-react"
 import Image from "next/image"
-import Link from "next/link"
 import { QuoteModal } from "@/components/quote-modal"
 import { LocalShippingForm } from "@/components/local-shipping-form"
 import { InternationalShippingForm } from "@/components/international-shipping-form"
@@ -53,7 +52,13 @@ export default function RuruLanding() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <img src="/logo.png" alt="RURU Logo" className="h-8 w-auto" />
+              <Image
+                src="/logo.png"
+                alt="RURU Logo"
+                width={300}
+                height={100}
+                className="h-8 w-auto"
+              />
             </div>
 
             <nav className="hidden md:flex space-x-8">
@@ -106,16 +111,20 @@ export default function RuruLanding() {
 
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-4">
                 <a href="#" target="_blank" rel="noopener noreferrer">
-                  <img
+                  <Image
                     src="/googleplay.png"
                     alt="Get it on Google Play"
+                    width={300}
+                    height={100}
                     className="h-12 w-auto"
                   />
                 </a>
                 <a href="#" target="_blank" rel="noopener noreferrer">
-                  <img
+                  <Image
                     src="/appstore.png"
                     alt="Download on the App Store"
+                    width={300}
+                    height={100}
                     className="h-12 w-auto"
                   />
                 </a>
@@ -283,16 +292,20 @@ export default function RuruLanding() {
 
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-4">
                 <a href="#" target="_blank" rel="noopener noreferrer">
-                  <img
+                  <Image
                     src="/googleplay.png"
                     alt="Get it on Google Play"
+                    width={300}
+                    height={100}
                     className="h-12 w-auto"
                   />
                 </a>
                 <a href="#" target="_blank" rel="noopener noreferrer">
-                  <img
+                  <Image
                     src="/appstore.png"
                     alt="Download on the App Store"
+                    width={300}
+                    height={100}
                     className="h-12 w-auto"
                   />
                 </a>
@@ -357,7 +370,13 @@ export default function RuruLanding() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center">
-              <img src="/logo.png" alt="RURU Logo" className="h-8 w-auto" />
+              <Image
+                src="/logo.png"
+                alt="RURU Logo"
+                width={300}
+                height={100}
+                className="h-8 w-auto"
+              />
             </div>
 
             <nav className="flex space-x-8">
