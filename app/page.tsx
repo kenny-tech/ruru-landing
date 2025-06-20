@@ -10,12 +10,22 @@ import Image from "next/image"
 import { QuoteModal } from "@/components/quote-modal"
 import { LocalShippingForm } from "@/components/local-shipping-form"
 import { InternationalShippingForm } from "@/components/international-shipping-form"
+import axios from "axios"
+import { toast, ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 type ViewState = "landing" | "local-form" | "international-form"
 
 export default function RuruLanding() {
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false)
   const [currentView, setCurrentView] = useState<ViewState>("landing")
+  const [contactForm, setContactForm] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSelectLocal = () => {
     setIsQuoteModalOpen(false)
@@ -31,14 +41,34 @@ export default function RuruLanding() {
     setCurrentView("landing")
   }
 
-  // Show forms when not on landing page
-  if (currentView === "local-form") {
-    return <LocalShippingForm onBack={handleBackToLanding} />
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const { name, email, subject, message } = contactForm
+    if (!name || !email || !subject || !message) {
+      toast.error("Please fill in all fields")
+      return
+    }
+
+    setIsSubmitting(true)
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/demo/get-in-touch`, contactForm)
+      if (response.data.success) {
+        toast.success("Message sent successfully!")
+        setContactForm({ name: "", email: "", subject: "", message: "" })
+      } else {
+        toast.error(response.data.message || "Failed to send message.")
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error("An error occurred while sending your message.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
-  if (currentView === "international-form") {
-    return <InternationalShippingForm onBack={handleBackToLanding} />
-  }
+  if (currentView === "local-form") return <LocalShippingForm onBack={handleBackToLanding} />
+  if (currentView === "international-form") return <InternationalShippingForm onBack={handleBackToLanding} />
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -50,6 +80,7 @@ export default function RuruLanding() {
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ToastContainer position="top-right" autoClose={3000} />
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Image
@@ -328,37 +359,28 @@ export default function RuruLanding() {
 
           <Card>
             <CardContent className="p-8">
-              <form className="space-y-6">
+              <form onSubmit={handleContactSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                      Name
-                    </label>
-                    <Input id="name" placeholder="Your name" />
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                    <Input id="name" placeholder="Your name" value={contactForm.name} onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })} />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Email
-                    </label>
-                    <Input id="email" type="email" placeholder="your@email.com" />
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <Input id="email" type="email" placeholder="your@email.com" value={contactForm.email} onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })} />
                   </div>
                 </div>
-
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                    Subject
-                  </label>
-                  <Input id="subject" placeholder="How can we help?" />
+                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+                  <Input id="subject" placeholder="How can we help?" value={contactForm.subject} onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })} />
                 </div>
-
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                    Message
-                  </label>
-                  <Textarea id="message" rows={5} placeholder="Tell us more about your inquiry..." />
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                  <Textarea id="message" rows={5} placeholder="Tell us more about your inquiry..." value={contactForm.message} onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })} />
                 </div>
-
-                <Button className="w-full bg-[#EF7D35] hover:bg-orange-700 text-white">Send Message</Button>
+                <Button type="submit" disabled={isSubmitting} className="w-full bg-[#EF7D35] hover:bg-orange-700 text-white">
+                  {isSubmitting ? "Sending..." : "Send Message"}
+                </Button>
               </form>
             </CardContent>
           </Card>

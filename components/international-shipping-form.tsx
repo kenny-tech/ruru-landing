@@ -1,14 +1,26 @@
 "use client"
 
-import type React from "react"
+import React, { useState } from "react"
+import { toast, ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { ArrowLeft, Upload } from "lucide-react"
 
 interface InternationalShippingFormProps {
@@ -30,22 +42,95 @@ export function InternationalShippingForm({ onBack }: InternationalShippingFormP
     itemImage: null as File | null,
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("International shipping form submitted:", formData)
-    // Handle form submission here
-  }
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
       setFormData({ ...formData, itemImage: file })
+      setImagePreview(URL.createObjectURL(file))
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // Basic validation
+    const {
+      fullName,
+      email,
+      phone,
+      origin,
+      destination,
+      quantity,
+      weight,
+      value,
+      itemDescription,
+      natureOfItem,
+      itemImage,
+    } = formData
+
+    if (
+      !fullName ||
+      !email ||
+      !phone ||
+      !origin ||
+      !destination ||
+      !quantity ||
+      !weight ||
+      !value ||
+      !itemDescription ||
+      !natureOfItem ||
+      !itemImage
+    ) {
+      toast.error("Please fill in all fields.")
+      return
+    }
+
+    const form = new FormData()
+    form.append("fullname", fullName)
+    form.append("email", email)
+    form.append("phoneNumber", phone)
+    form.append("origin", origin)
+    form.append("destination", destination)
+    form.append("quantity", quantity)
+    form.append("weight", weight)
+    form.append("value", value)
+    form.append("itemDescription", itemDescription)
+    form.append("nature", natureOfItem.toUpperCase())
+    form.append("file", itemImage)
+
+    try {
+      setIsSubmitting(true)
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/demo/request-international-demo-shipping`, {
+        method: "POST",
+        body: form,
+      })
+
+      const result = await res.json()
+
+      if (result.success) {
+        setTimeout(() => {
+          toast.success("International shipping request submitted!")
+        }, 2000)
+        window.location.reload() // reloads the current page
+      } else {
+        toast.error(result.message || "Something went wrong.")
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error("Error submitting form.")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ToastContainer position="top-right" autoClose={3000} />
+
         <div className="mb-6">
           <Button variant="ghost" onClick={onBack} className="mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -58,9 +143,7 @@ export function InternationalShippingForm({ onBack }: InternationalShippingFormP
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Personal Information */}
           <Card>
-            <CardHeader>
-              <CardTitle>Personal Information</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle>Personal Information</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
@@ -98,9 +181,7 @@ export function InternationalShippingForm({ onBack }: InternationalShippingFormP
 
           {/* Shipping Details */}
           <Card>
-            <CardHeader>
-              <CardTitle>Shipping Details</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle>Shipping Details</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -147,13 +228,12 @@ export function InternationalShippingForm({ onBack }: InternationalShippingFormP
                   />
                 </div>
                 <div>
-                  <Label htmlFor="value">Value (Naira)</Label>
+                  <Label htmlFor="value">Value (₦)</Label>
                   <Input
                     id="value"
                     type="number"
                     value={formData.value}
                     onChange={(e) => setFormData({ ...formData, value: e.target.value })}
-                    placeholder="₦"
                     required
                   />
                 </div>
@@ -163,9 +243,7 @@ export function InternationalShippingForm({ onBack }: InternationalShippingFormP
 
           {/* Item Details */}
           <Card>
-            <CardHeader>
-              <CardTitle>Item Details</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle>Item Details</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="itemDescription">Item Description</Label>
@@ -198,14 +276,19 @@ export function InternationalShippingForm({ onBack }: InternationalShippingFormP
                     <p className="text-sm text-gray-600">
                       {formData.itemImage ? formData.itemImage.name : "Click to upload item image"}
                     </p>
+                    {imagePreview && <img src={imagePreview} alt="Preview" className="mx-auto mt-4 h-32 object-contain" />}
                   </label>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Button type="submit" className="w-full bg-[#EF7D35] hover:bg-orange-700 text-white py-3">
-            Submit International Shipping Quote Request
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-[#EF7D35] hover:bg-orange-700 text-white py-3"
+          >
+            {isSubmitting ? "Submitting..." : "Submit International Shipping Quote Request"}
           </Button>
         </form>
       </div>
