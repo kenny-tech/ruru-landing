@@ -48,7 +48,7 @@ export function QuoteModal({ isOpen, onClose, onSelectLocal, onSelectInternation
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Local Shipping</h3>
                 <p className="text-gray-600 mb-4">
-                  Domestic deliveries within your country with flexible pickup and delivery options.
+                  Domestic deliveries within your country.
                 </p>
                 <Button className="w-full bg-[#EF7D35] hover:bg-orange-700 text-white">Get Local Quote</Button>
               </CardContent>
@@ -61,7 +61,7 @@ export function QuoteModal({ isOpen, onClose, onSelectLocal, onSelectInternation
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">International Shipping</h3>
                 <p className="text-gray-600 mb-4">
-                  Cross-border deliveries with customs handling and international tracking.
+                  International deliveries across countries.
                 </p>
                 <Button className="w-full bg-[#EF7D35] hover:bg-orange-700 text-white">Get International Quote</Button>
               </CardContent>
