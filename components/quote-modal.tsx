@@ -38,31 +38,31 @@ export function QuoteModal({ isOpen, onClose, onSelectLocal, onSelectInternation
 
         <div className="p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Request a Quote</h2>
-          {/* <p className="text-gray-600 text-center mb-8">Choose your shipping type to get started</p> */}
+          <p className="text-gray-600 text-center mb-8">Choose your shipping type to get started</p>
           <div className="grid md:grid-cols-2 gap-6">
             <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={onSelectLocal}>
-              <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Truck className="h-8 w-8 text-[#EF7D35]" />
+              <CardContent className="p-4 text-center">
+                <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Truck className="h-6 w-6 text-[#EF7D35]" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Local Shipping</h3>
-                <p className="text-gray-600 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">Local Shipping</h3>
+                <p className="text-gray-600 mb-3">
                   Domestic deliveries within your country.
                 </p>
-                <Button className="w-full bg-[#EF7D35] hover:bg-orange-700 text-white">Get Local Quote</Button>
+                <Button className="w-full bg-[#EF7D35] hover:bg-orange-700 text-white text-sm">Get Local Quote</Button>
               </CardContent>
             </Card>
 
             <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={onSelectInternational}>
-              <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Globe className="h-8 w-8 text-[#EF7D35]" />
+              <CardContent className="p-4 text-center">
+                <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Globe className="h-6 w-6 text-[#EF7D35]" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">International Shipping</h3>
-                <p className="text-gray-600 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">International Shipping</h3>
+                <p className="text-gray-600 mb-3">
                   International deliveries across countries.
                 </p>
-                <Button className="w-full bg-[#EF7D35] hover:bg-orange-700 text-white">Get International Quote</Button>
+                <Button className="w-full bg-[#EF7D35] hover:bg-orange-700 text-white text-sm">Get International Quote</Button>
               </CardContent>
             </Card>
           </div>
