@@ -197,7 +197,7 @@ export default function RuruLanding() {
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900">Easy Online Access</h3>
                   <p className="mt-2 text-gray-600">
-                    Book and manage your deliveries online with our user-friendly platform
+                    Book and manage your deliveries online with our user-friendly app
                   </p>
                 </div>
               </div>
@@ -270,7 +270,7 @@ export default function RuruLanding() {
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Request Pickup</h3>
               <p className="text-gray-600">
-                Schedule a pickup time and location that works best for you through our app or website
+                Schedule a pickup time and location that works best for you through our app
               </p>
             </div>
 
