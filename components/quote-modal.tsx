@@ -38,8 +38,7 @@ export function QuoteModal({ isOpen, onClose, onSelectLocal, onSelectInternation
 
         <div className="p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Request a Quote</h2>
-          <p className="text-gray-600 text-center mb-8">Choose your shipping type to get started</p>
-
+          {/* <p className="text-gray-600 text-center mb-8">Choose your shipping type to get started</p> */}
           <div className="grid md:grid-cols-2 gap-6">
             <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={onSelectLocal}>
               <CardContent className="p-6 text-center">
