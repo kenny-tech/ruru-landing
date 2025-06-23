@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
-import { Globe, Clock, MapPin, Shield } from "lucide-react"
+import { Globe, Clock, MapPin, Gift, Zap, MessageCircle } from "lucide-react"
 import Image from "next/image"
 import { QuoteModal } from "@/components/quote-modal"
 import { LocalShippingForm } from "@/components/local-shipping-form"
@@ -184,7 +184,7 @@ export default function RuruLanding() {
             </div>
             <h2 className="text-3xl lg:text-4xl font-bold text-[#7A315F]">Why Choose RURU?</h2>
             <p className="mt-4 text-lg text-gray-600">
-              Our logistics app is designed to make parcel delivery seamless and transparent.
+              RURU is a logistics app designed for a seamless and transparent parcel delivery experience. It offers the following features: real-time tracking, automated dispatching, and clear communication channels, all aimed at simplifying the delivery process and enhancing customer satisfaction. You also earn a bonus coin for every complete delivery you make via the app.
             </p>
           </div>
 
@@ -192,46 +192,48 @@ export default function RuruLanding() {
             <div className="space-y-8">
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <Globe className="h-6 w-6 text-[#EF7D35]" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-900">Easy Online Access</h3>
-                  <p className="mt-2 text-gray-600">
-                    Book and manage your deliveries online with our user-friendly app
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                   <Clock className="h-6 w-6 text-[#EF7D35]" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900">Real-Time Tracking</h3>
                   <p className="mt-2 text-gray-600">
-                    Track your packages in real-time and get updates on delivery status
+                    Track your packages live and get instant updates on delivery status.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <MapPin className="h-6 w-6 text-[#EF7D35]" />
+                  <Zap className="h-6 w-6 text-[#EF7D35]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900">Flexible Location Sharing</h3>
-                  <p className="mt-2 text-gray-600">Share precise locations for accurate and timely deliveries</p>
+                  <h3 className="text-xl font-semibold text-gray-900">Automated Dispatching</h3>
+                  <p className="mt-2 text-gray-600">
+                    Benefit from smart routing and automated dispatch to ensure timely pickups and deliveries.
+                  </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <Shield className="h-6 w-6 text-[#EF7D35]" />
+                  <MessageCircle className="h-6 w-6 text-[#EF7D35]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900">Secure Deliveries</h3>
+                  <h3 className="text-xl font-semibold text-gray-900">Clear Communication Channels</h3>
                   <p className="mt-2 text-gray-600">
-                    Your packages are safe with our secure handling and delivery process
+                    Stay informed with direct messages, notifications, and support throughout the delivery process.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <Gift className="h-6 w-6 text-[#EF7D35]" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900">Bonus Coin Rewards</h3>
+                  <p className="mt-2 text-gray-600">
+                    Earn a bonus coin for every completed delivery, redeemable for discounts or perks in the app.
                   </p>
                 </div>
               </div>
