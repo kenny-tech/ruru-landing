@@ -103,7 +103,7 @@ export function InternationalShippingForm({ onBack }: InternationalShippingFormP
 
     try {
       setIsSubmitting(true)
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/demo/request-international-demo-shipping`, {
+      const res = await fetch('https://ruru-backend.onrender.com/api/v1/demo/request-international-demo-shipping', {
         method: "POST",
         body: form,
       })

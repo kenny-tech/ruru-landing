@@ -52,7 +52,7 @@ export default function RuruLanding() {
 
     setIsSubmitting(true)
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/demo/get-in-touch`, contactForm)
+      const response = await axios.post('https://ruru-backend.onrender.com/api/v1/demo/get-in-touch', contactForm)
       if (response.data.success) {
         toast.success("Message sent successfully!")
         setContactForm({ name: "", email: "", subject: "", message: "" })
