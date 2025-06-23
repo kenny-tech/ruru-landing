@@ -89,7 +89,7 @@ export function LocalShippingForm({ onBack }: LocalShippingFormProps) {
     form.append("file", formData.itemImage)
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/demo/request-local-demo-shipping`, {
+      const response = await fetch('https://ruru-backend.onrender.com/api/v1/demo/request-local-demo-shipping', {
         method: "POST",
         body: form,
       })
