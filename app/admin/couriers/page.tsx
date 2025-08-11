@@ -255,7 +255,7 @@ export default function Couriers() {
     });
 
     setCouriers(updatedCouriers);
-    setSelectedCourier(updatedCouriers.find(c => c.id === selectedCourier.id) || null);
+    setSelectedCourier(updatedCouriers.find((c:any) => c.id === selectedCourier.id) || null);
     handleCloseDocument();
   };
 
