@@ -99,7 +99,7 @@ export default function Settings() {
         <h1 className="text-2xl font-bold">Settings</h1>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Profile Settings */}
         <Card>
           <CardHeader className="space-y-1">
@@ -238,7 +238,7 @@ export default function Settings() {
         </Card>
 
         {/* System Settings */}
-        <Card>
+        {/* <Card>
           <CardHeader className="space-y-1">
             <CardTitle className="text-xl">System Settings</CardTitle>
             <CardDescription>
@@ -276,7 +276,7 @@ export default function Settings() {
               </Button>
             </div>
           </div>
-        </Card>
+        </Card> */}
       </div>
     </div>
   );

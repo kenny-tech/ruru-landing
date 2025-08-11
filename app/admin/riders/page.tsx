@@ -290,10 +290,6 @@ export default function Riders() {
                       <p className="text-sm text-gray-500">Last Activity</p>
                       <p className="font-medium">2 days ago</p>
                     </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Average Rating</p>
-                      <p className="font-medium">4.7/5.0</p>
-                    </div>
                   </div>
                 </div>
               </div>

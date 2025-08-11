@@ -66,7 +66,7 @@ export default function Dashboard() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <StatCard
           title="Total Couriers"
           value={stats.couriers}
@@ -88,71 +88,13 @@ export default function Dashboard() {
           icon={<Users size={24} className="text-white" />}
           color="bg-blue-500"
         />
-        <StatCard
+        {/* <StatCard
           title="Total Transactions"
           value={stats.transactions}
           description="Completed deliveries"
           icon={<FileText size={24} className="text-white" />}
           color="bg-green-500"
-        />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="p-6">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-lg font-semibold flex items-center gap-2">
-              <TrendingUp size={20} className="text-[#EF7D35]" />
-              Recent Activities
-            </CardTitle>
-          </CardHeader>
-          <div className="space-y-4 mt-4">
-            {[
-              { time: '2 hours ago', action: 'New courier registration: FastTruck Logistics' },
-              { time: '5 hours ago', action: 'Courier approved: SpeedyDelivery Inc.' },
-              { time: '1 day ago', action: 'New customer registration: John Doe' },
-              { time: '2 days ago', action: 'Transaction completed: Order #12345' },
-              { time: '3 days ago', action: 'Rider deactivated: Michael Johnson' },
-            ].map((activity, index) => (
-              <div key={index} className="flex items-start gap-3 pb-4 border-b last:border-0 last:pb-0">
-                <div className="w-2 h-2 rounded-full bg-[#EF7D35] mt-2"></div>
-                <div>
-                  <p className="font-medium">{activity.action}</p>
-                  <p className="text-sm text-gray-500">{activity.time}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-lg font-semibold flex items-center gap-2">
-              <Truck size={20} className="text-[#7A315F]" />
-              Pending Approvals
-            </CardTitle>
-          </CardHeader>
-          <div className="space-y-4 mt-4">
-            {[
-              { name: 'Express Logistics', type: 'Courier', status: 'Pending Document Verification' },
-              { name: 'Fast Delivery Co.', type: 'Courier', status: 'Pending Insurance Document' },
-              { name: 'City Riders', type: 'Courier', status: 'Pending Business Address Verification' },
-              { name: 'Metro Delivery', type: 'Courier', status: 'Pending Permit Document' },
-              { name: 'Quick Transport', type: 'Courier', status: 'Pending Incorporation Document' },
-            ].map((item, index) => (
-              <div key={index} className="flex items-start justify-between pb-4 border-b last:border-0 last:pb-0">
-                <div>
-                  <p className="font-medium">{item.name}</p>
-                  <p className="text-sm text-gray-500">{item.type} • {item.status}</p>
-                </div>
-                {/* <div className="flex gap-2">
-                  <button className="text-xs px-2 py-1 bg-[#EF7D35]/10 text-[#EF7D35] rounded hover:bg-[#EF7D35]/20">
-                    View
-                  </button>
-                </div> */}
-              </div>
-            ))}
-          </div>
-        </Card>
+        /> */}
       </div>
     </div>
   );
