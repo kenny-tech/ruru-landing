@@ -99,7 +99,7 @@ export default function Settings() {
         <h1 className="text-2xl font-bold">Settings</h1>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Profile Settings */}
         <Card>
           <CardHeader className="space-y-1">
@@ -237,69 +237,6 @@ export default function Settings() {
           </div>
         </Card>
 
-        {/* Notification Settings */}
-        <Card>
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-xl">Notification Settings</CardTitle>
-            <CardDescription>
-              Manage your notification preferences
-            </CardDescription>
-          </CardHeader>
-          <div className="p-6 pt-0">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Email Notifications</p>
-                  <p className="text-sm text-gray-500">Receive email notifications for important events</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" defaultChecked />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#EF7D35]"></div>
-                </label>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Express Delivery Alerts</p>
-                  <p className="text-sm text-gray-500">Get notified when express deliveries are booked</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" defaultChecked />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#EF7D35]"></div>
-                </label>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Courier Registration Alerts</p>
-                  <p className="text-sm text-gray-500">Get notified when new couriers register</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" defaultChecked />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#EF7D35]"></div>
-                </label>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">System Updates</p>
-                  <p className="text-sm text-gray-500">Receive notifications about system updates</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#EF7D35]"></div>
-                </label>
-              </div>
-            </div>
-
-            <div className="pt-4">
-              <Button className="w-full bg-[#EF7D35] hover:bg-[#EF7D35]/90">
-                Save Preferences
-              </Button>
-            </div>
-          </div>
-        </Card>
-
         {/* System Settings */}
         <Card>
           <CardHeader className="space-y-1">
@@ -311,18 +248,6 @@ export default function Settings() {
           <div className="p-6 pt-0">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="expressRate">Express Delivery Rate (%)</Label>
-                <Input
-                  id="expressRate"
-                  type="number"
-                  defaultValue="25"
-                  min="0"
-                  max="100"
-                />
-                <p className="text-xs text-gray-500">Additional percentage charged for express deliveries</p>
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="loyaltyRate">Loyalty Points Rate</Label>
                 <Input
                   id="loyaltyRate"
@@ -330,7 +255,7 @@ export default function Settings() {
                   defaultValue="10"
                   min="0"
                 />
-                <p className="text-xs text-gray-500">Number of loyalty points earned per ₦1,000 spent</p>
+                <p className="text-xs text-gray-500">Number of loyalty points earned per delivery</p>
               </div>
 
               <div className="space-y-2">
@@ -346,7 +271,7 @@ export default function Settings() {
             </div>
 
             <div className="pt-4">
-              <Button className="w-full bg-[#7A315F] hover:bg-[#7A315F]/90">
+              <Button className="w-full bg-[#EF7D35] hover:bg-[#EF7D35]/90">
                 Save Settings
               </Button>
             </div>

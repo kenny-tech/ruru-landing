@@ -85,7 +85,7 @@ export default function AdminLayout({
     { href: '/admin/customers', icon: <Users size={20} />, label: 'Customers' },
     { href: '/admin/riders', icon: <Users size={20} />, label: 'Riders' },
     { href: '/admin/transactions', icon: <FileText size={20} />, label: 'Transactions' },
-    { href: '/admin/create-admin', icon: <UserPlus size={20} />, label: 'Create Admin' },
+    // { href: '/admin/create-admin', icon: <UserPlus size={20} />, label: 'Create Admin' },
     { href: '/admin/settings', icon: <Settings size={20} />, label: 'Settings' },
   ];
 
