@@ -87,6 +87,7 @@ export default function AdminLayout({
     { href: '/admin/transactions', icon: <FileText size={20} />, label: 'Transactions' },
     // { href: '/admin/create-admin', icon: <UserPlus size={20} />, label: 'Create Admin' },
     { href: '/admin/settings', icon: <Settings size={20} />, label: 'Settings' },
+    { href: '', icon: <LogOut size={20} />, label: 'Logout' },
   ];
 
   // For pages without sidebar (login, forgot password)
@@ -158,14 +159,14 @@ export default function AdminLayout({
           </nav>
 
           {/* Logout button */}
-          <Button 
+          {/* <Button 
             variant="ghost" 
             className="mt-auto flex items-center gap-3 justify-start text-gray-700 hover:bg-gray-100 hover:text-gray-900"
             onClick={handleLogout}
           >
             <LogOut size={20} />
             <span>Logout</span>
-          </Button>
+          </Button> */}
         </div>
       </aside>
 
