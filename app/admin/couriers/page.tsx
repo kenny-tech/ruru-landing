@@ -6,6 +6,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Eye, CheckCircle, XCircle, Search } from 'lucide-react';
 
+interface DocumentStatus {
+  verified: boolean;
+  rejected: boolean;
+  comment?: string;
+}
+
+interface CourierDocument {
+  url: string;
+  status: DocumentStatus;
+}
+
 interface Courier {
   id: string;
   name: string;
@@ -13,10 +24,10 @@ interface Courier {
   phone: string;
   status: 'pending' | 'approved' | 'rejected';
   documents: {
-    incorporationDoc: string;
-    businessAddressDoc: string;
-    insuranceDoc: string;
-    permitDoc: string;
+    incorporationDoc: CourierDocument;
+    businessAddressDoc: CourierDocument;
+    insuranceDoc: CourierDocument;
+    permitDoc: CourierDocument;
   };
   registrationDate: string;
   ridersCount: number;
@@ -28,12 +39,17 @@ export default function Couriers() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedCourier, setSelectedCourier] = useState<Courier | null>(null);
-  const [viewingDocument, setViewingDocument] = useState<{ type: string; url: string } | null>(null);
+  const [viewingDocument, setViewingDocument] = useState<{ 
+    type: string; 
+    url: string; 
+    status: DocumentStatus 
+  } | null>(null);
+  const [documentComment, setDocumentComment] = useState('');
 
   useEffect(() => {
     // Simulate fetching data
     const fetchCouriers = () => {
-      // Demo data
+      // Demo data with document status
       const demoData: Courier[] = [
         {
           id: '1',
@@ -42,10 +58,22 @@ export default function Couriers() {
           phone: '+234 801 234 5678',
           status: 'pending',
           documents: {
-            incorporationDoc: '/file.svg',
-            businessAddressDoc: '/file.svg',
-            insuranceDoc: '/file.svg',
-            permitDoc: '/file.svg',
+            incorporationDoc: {
+              url: '/file.svg',
+              status: { verified: false, rejected: false }
+            },
+            businessAddressDoc: {
+              url: '/file.svg',
+              status: { verified: false, rejected: false }
+            },
+            insuranceDoc: {
+              url: '/file.svg',
+              status: { verified: false, rejected: false }
+            },
+            permitDoc: {
+              url: '/file.svg',
+              status: { verified: false, rejected: false }
+            },
           },
           registrationDate: '2023-10-15',
           ridersCount: 12,
@@ -57,10 +85,22 @@ export default function Couriers() {
           phone: '+234 802 345 6789',
           status: 'approved',
           documents: {
-            incorporationDoc: '/file.svg',
-            businessAddressDoc: '/file.svg',
-            insuranceDoc: '/file.svg',
-            permitDoc: '/file.svg',
+            incorporationDoc: {
+              url: '/file.svg',
+              status: { verified: true, rejected: false }
+            },
+            businessAddressDoc: {
+              url: '/file.svg',
+              status: { verified: true, rejected: false }
+            },
+            insuranceDoc: {
+              url: '/file.svg',
+              status: { verified: true, rejected: false }
+            },
+            permitDoc: {
+              url: '/file.svg',
+              status: { verified: true, rejected: false }
+            },
           },
           registrationDate: '2023-09-22',
           ridersCount: 18,
@@ -72,10 +112,22 @@ export default function Couriers() {
           phone: '+234 803 456 7890',
           status: 'rejected',
           documents: {
-            incorporationDoc: '/file.svg',
-            businessAddressDoc: '/file.svg',
-            insuranceDoc: '/file.svg',
-            permitDoc: '/file.svg',
+            incorporationDoc: {
+              url: '/file.svg',
+              status: { verified: false, rejected: true, comment: 'Document expired' }
+            },
+            businessAddressDoc: {
+              url: '/file.svg',
+              status: { verified: false, rejected: false }
+            },
+            insuranceDoc: {
+              url: '/file.svg',
+              status: { verified: false, rejected: false }
+            },
+            permitDoc: {
+              url: '/file.svg',
+              status: { verified: false, rejected: false }
+            },
           },
           registrationDate: '2023-11-05',
           ridersCount: 7,
@@ -87,10 +139,22 @@ export default function Couriers() {
           phone: '+234 804 567 8901',
           status: 'pending',
           documents: {
-            incorporationDoc: '/file.svg',
-            businessAddressDoc: '/file.svg',
-            insuranceDoc: '/file.svg',
-            permitDoc: '/file.svg',
+            incorporationDoc: {
+              url: '/file.svg',
+              status: { verified: true, rejected: false }
+            },
+            businessAddressDoc: {
+              url: '/file.svg',
+              status: { verified: false, rejected: false }
+            },
+            insuranceDoc: {
+              url: '/file.svg',
+              status: { verified: false, rejected: true, comment: 'Insurance coverage insufficient' }
+            },
+            permitDoc: {
+              url: '/file.svg',
+              status: { verified: false, rejected: false }
+            },
           },
           registrationDate: '2023-12-10',
           ridersCount: 15,
@@ -102,10 +166,22 @@ export default function Couriers() {
           phone: '+234 805 678 9012',
           status: 'approved',
           documents: {
-            incorporationDoc: '/file.svg',
-            businessAddressDoc: '/file.svg',
-            insuranceDoc: '/file.svg',
-            permitDoc: '/file.svg',
+            incorporationDoc: {
+              url: '/file.svg',
+              status: { verified: true, rejected: false }
+            },
+            businessAddressDoc: {
+              url: '/file.svg',
+              status: { verified: true, rejected: false }
+            },
+            insuranceDoc: {
+              url: '/file.svg',
+              status: { verified: true, rejected: false }
+            },
+            permitDoc: {
+              url: '/file.svg',
+              status: { verified: true, rejected: false }
+            },
           },
           registrationDate: '2023-08-30',
           ridersCount: 20,
@@ -137,24 +213,81 @@ export default function Couriers() {
     setSelectedCourier(courier);
   };
 
-  const handleViewDocument = (type: string, url: string) => {
-    setViewingDocument({ type, url });
+  const handleViewDocument = (type: string, document: CourierDocument) => {
+    setViewingDocument({ type, url: document.url, status: document.status });
+    setDocumentComment(document.status.comment || '');
   };
 
   const handleCloseDocument = () => {
     setViewingDocument(null);
+    setDocumentComment('');
   };
 
-  const handleStatusChange = (courierId: string, newStatus: 'approved' | 'rejected') => {
-    const updatedCouriers = couriers.map(courier => 
-      courier.id === courierId ? { ...courier, status: newStatus } : courier
-    );
-    
+  const handleApproveDocument = (documentType: keyof Courier['documents']) => {
+    if (!selectedCourier) return;
+
+    const updatedCouriers = couriers.map(courier => {
+      if (courier.id === selectedCourier.id) {
+        const updatedDocuments = {
+          ...courier.documents,
+          [documentType]: {
+            ...courier.documents[documentType],
+            status: {
+              verified: true,
+              rejected: false,
+              comment: documentComment
+            }
+          }
+        };
+
+        // Check if all documents are approved to update courier status
+        const allApproved = Object.values(updatedDocuments).every(
+          doc => doc.status.verified && !doc.status.rejected
+        );
+
+        return {
+          ...courier,
+          documents: updatedDocuments,
+          status: allApproved ? 'approved' : courier.status
+        };
+      }
+      return courier;
+    });
+
     setCouriers(updatedCouriers);
-    
-    if (selectedCourier && selectedCourier.id === courierId) {
-      setSelectedCourier({ ...selectedCourier, status: newStatus });
-    }
+    setSelectedCourier(updatedCouriers.find(c => c.id === selectedCourier.id) || null);
+    handleCloseDocument();
+  };
+
+  const handleRejectDocument = (documentType: keyof Courier['documents']) => {
+    if (!selectedCourier) return;
+
+    const updatedCouriers = couriers.map(courier => {
+      if (courier.id === selectedCourier.id) {
+        const updatedDocuments = {
+          ...courier.documents,
+          [documentType]: {
+            ...courier.documents[documentType],
+            status: {
+              verified: false,
+              rejected: true,
+              comment: documentComment
+            }
+          }
+        };
+
+        return {
+          ...courier,
+          documents: updatedDocuments,
+          status: 'pending' // Reset status if any document is rejected
+        };
+      }
+      return courier;
+    });
+
+    setCouriers(updatedCouriers);
+    setSelectedCourier(updatedCouriers.find(c => c.id === selectedCourier.id) || null);
+    handleCloseDocument();
   };
 
   const handleCloseDetails = () => {
@@ -178,6 +311,131 @@ export default function Couriers() {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const renderDocumentItem = (type: string, document: CourierDocument, documentKey: keyof Courier['documents']) => {
+    return (
+      <div className="flex items-center justify-between p-3 border rounded-md">
+        <div className="flex items-center gap-3">
+          <span>{type}</span>
+          {document.status.verified && (
+            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+              Approved
+            </span>
+          )}
+          {document.status.rejected && (
+            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">
+              Rejected
+            </span>
+          )}
+        </div>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={() => handleViewDocument(type, document)}
+        >
+          <Eye size={16} className="mr-1" />
+          {document.status.verified || document.status.rejected ? 'Review' : 'Verify'}
+        </Button>
+      </div>
+    );
+  };
+
+  const renderDocumentsSection = () => (
+    <div>
+      <h3 className="font-semibold mb-4">Documents</h3>
+      <div className="space-y-3">
+        {renderDocumentItem(
+          'Incorporation Document', 
+          selectedCourier.documents.incorporationDoc, 
+          'incorporationDoc'
+        )}
+        {renderDocumentItem(
+          'Business Address Document', 
+          selectedCourier.documents.businessAddressDoc, 
+          'businessAddressDoc'
+        )}
+        {renderDocumentItem(
+          'Insurance Document', 
+          selectedCourier.documents.insuranceDoc, 
+          'insuranceDoc'
+        )}
+        {renderDocumentItem(
+          'Permit Document', 
+          selectedCourier.documents.permitDoc, 
+          'permitDoc'
+        )}
+      </div>
+    </div>
+  );
+
+  const renderDocumentViewer = () => {
+    if (!viewingDocument || !selectedCourier) return null;
+
+    const documentType = viewingDocument.type.replace(' Document', '');
+    const documentKey = `${documentType.charAt(0).toLowerCase() + documentType.slice(1)}Doc` as keyof Courier['documents'];
+
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={handleCloseDocument}>
+        <div className="bg-white rounded-lg max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold">{viewingDocument.type}</h2>
+              <Button variant="ghost" size="sm" onClick={handleCloseDocument}>
+                <XCircle size={20} />
+              </Button>
+            </div>
+
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center justify-center p-10 border rounded-md bg-gray-50">
+                <div className="text-center">
+                  <img 
+                    src={viewingDocument.url} 
+                    alt={viewingDocument.type} 
+                    className="w-16 h-16 mx-auto mb-4" 
+                  />
+                  <p className="text-gray-500">Document preview would be displayed here</p>
+                  <p className="text-sm text-gray-400 mt-2">This is a demo placeholder</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Verification Comment
+                  </label>
+                  <textarea
+                    className="w-full border rounded-md p-2 text-sm"
+                    rows={3}
+                    value={documentComment}
+                    onChange={(e) => setDocumentComment(e.target.value)}
+                    placeholder="Add comments about this document..."
+                  />
+                </div>
+
+                <div className="flex justify-end gap-3">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => handleRejectDocument(documentKey)}
+                    className="border-red-300 text-red-600 hover:bg-red-50"
+                  >
+                    <XCircle size={18} className="mr-1" />
+                    Reject Document
+                  </Button>
+                  <Button 
+                    onClick={() => handleApproveDocument(documentKey)}
+                    className="bg-[#EF7D35] hover:bg-[#EF7D35]/90 text-white"
+                  >
+                    <CheckCircle size={18} className="mr-1" />
+                    Approve Document
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -308,133 +566,15 @@ export default function Couriers() {
                   </div>
                 </div>
 
-                <div>
-                  <h3 className="font-semibold mb-4">Documents</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 border rounded-md">
-                      <span>Incorporation Document</span>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleViewDocument('Incorporation Document', selectedCourier.documents.incorporationDoc)}
-                      >
-                        <Eye size={16} className="mr-1" />
-                        View
-                      </Button>
-                    </div>
-                    <div className="flex items-center justify-between p-3 border rounded-md">
-                      <span>Business Address Document</span>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleViewDocument('Business Address Document', selectedCourier.documents.businessAddressDoc)}
-                      >
-                        <Eye size={16} className="mr-1" />
-                        View
-                      </Button>
-                    </div>
-                    <div className="flex items-center justify-between p-3 border rounded-md">
-                      <span>Insurance Document</span>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleViewDocument('Insurance Document', selectedCourier.documents.insuranceDoc)}
-                      >
-                        <Eye size={16} className="mr-1" />
-                        View
-                      </Button>
-                    </div>
-                    <div className="flex items-center justify-between p-3 border rounded-md">
-                      <span>Permit Document</span>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleViewDocument('Permit Document', selectedCourier.documents.permitDoc)}
-                      >
-                        <Eye size={16} className="mr-1" />
-                        View
-                      </Button>
-                    </div>
-                  </div>
-                </div>
+                {renderDocumentsSection()}
               </div>
-
-              {selectedCourier.status === 'pending' && (
-                <div className="border-t pt-6 flex justify-end gap-3">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => handleStatusChange(selectedCourier.id, 'rejected')}
-                    className="border-red-300 text-red-600 hover:bg-red-50"
-                  >
-                    <XCircle size={18} className="mr-1" />
-                    Reject
-                  </Button>
-                  <Button 
-                    onClick={() => handleStatusChange(selectedCourier.id, 'approved')}
-                    className="bg-[#EF7D35] hover:bg-[#EF7D35]/90 text-white"
-                  >
-                    <CheckCircle size={18} className="mr-1" />
-                    Approve
-                  </Button>
-                </div>
-              )}
-
-              {selectedCourier.status === 'approved' && (
-                <div className="border-t pt-6 flex justify-end gap-3">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => handleStatusChange(selectedCourier.id, 'rejected')}
-                    className="border-red-300 text-red-600 hover:bg-red-50"
-                  >
-                    <XCircle size={18} className="mr-1" />
-                    Deactivate
-                  </Button>
-                </div>
-              )}
-
-              {selectedCourier.status === 'rejected' && (
-                <div className="border-t pt-6 flex justify-end gap-3">
-                  <Button 
-                    onClick={() => handleStatusChange(selectedCourier.id, 'approved')}
-                    className="bg-[#EF7D35] hover:bg-[#EF7D35]/90 text-white"
-                  >
-                    <CheckCircle size={18} className="mr-1" />
-                    Activate
-                  </Button>
-                </div>
-              )}
             </div>
           </div>
         </div>
       )}
 
       {/* Document Viewer Modal */}
-      {viewingDocument && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={handleCloseDocument}>
-          <div className="bg-white rounded-lg max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold">{viewingDocument.type}</h2>
-                <Button variant="ghost" size="sm" onClick={handleCloseDocument}>
-                  <XCircle size={20} />
-                </Button>
-              </div>
-
-              <div className="flex items-center justify-center p-10 border rounded-md bg-gray-50">
-                <div className="text-center">
-                  <img 
-                    src={viewingDocument.url} 
-                    alt={viewingDocument.type} 
-                    className="w-16 h-16 mx-auto mb-4" 
-                  />
-                  <p className="text-gray-500">Document preview would be displayed here</p>
-                  <p className="text-sm text-gray-400 mt-2">This is a demo placeholder</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {renderDocumentViewer()}
     </div>
   );
 }

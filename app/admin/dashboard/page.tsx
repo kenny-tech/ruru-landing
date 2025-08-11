@@ -144,11 +144,11 @@ export default function Dashboard() {
                   <p className="font-medium">{item.name}</p>
                   <p className="text-sm text-gray-500">{item.type} • {item.status}</p>
                 </div>
-                <div className="flex gap-2">
+                {/* <div className="flex gap-2">
                   <button className="text-xs px-2 py-1 bg-[#EF7D35]/10 text-[#EF7D35] rounded hover:bg-[#EF7D35]/20">
                     View
                   </button>
-                </div>
+                </div> */}
               </div>
             ))}
           </div>
