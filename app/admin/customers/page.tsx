@@ -4,133 +4,118 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Eye, CheckCircle, XCircle, Search } from 'lucide-react';
+import { Eye, CheckCircle, XCircle, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import api from '@/lib/api';
 
 interface Customer {
   id: string;
-  name: string;
+  fristName: string; // Note: Typo in API response (should be firstName)
+  lastName: string;
   email: string;
-  phone: string;
-  status: 'active' | 'inactive';
-  registrationDate: string;
-  totalTransactions: number;
-  loyaltyCoins: number;
+  phoneNumber: string;
+  profilePicture: string;
+  state: string;
+  isActive: boolean;
+  createdAt: string;
+  isDeactivated: boolean;
+  ninNumber: string | null;
+  isNinVerified: boolean;
+}
+
+interface Pagination {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 export default function Customers() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [pagination, setPagination] = useState<Pagination>({
+    total: 0,
+    page: 1,
+    limit: 5,
+    totalPages: 1
+  });
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
   useEffect(() => {
-    // Simulate fetching data
-    const fetchCustomers = () => {
-      // Demo data
-      const demoData: Customer[] = [
-        {
-          id: '1',
-          name: 'John Doe',
-          email: 'john.doe@example.com',
-          phone: '+234 801 234 5678',
-          status: 'active',
-          registrationDate: '2023-10-15',
-          totalTransactions: 12,
-          loyaltyCoins: 240,
-        },
-        {
-          id: '2',
-          name: 'Jane Smith',
-          email: 'jane.smith@example.com',
-          phone: '+234 802 345 6789',
-          status: 'active',
-          registrationDate: '2023-09-22',
-          totalTransactions: 8,
-          loyaltyCoins: 160,
-        },
-        {
-          id: '3',
-          name: 'Michael Johnson',
-          email: 'michael.j@example.com',
-          phone: '+234 803 456 7890',
-          status: 'inactive',
-          registrationDate: '2023-11-05',
-          totalTransactions: 3,
-          loyaltyCoins: 60,
-        },
-        {
-          id: '4',
-          name: 'Sarah Williams',
-          email: 'sarah.w@example.com',
-          phone: '+234 804 567 8901',
-          status: 'active',
-          registrationDate: '2023-12-10',
-          totalTransactions: 15,
-          loyaltyCoins: 300,
-        },
-        {
-          id: '5',
-          name: 'David Brown',
-          email: 'david.b@example.com',
-          phone: '+234 805 678 9012',
-          status: 'inactive',
-          registrationDate: '2023-08-30',
-          totalTransactions: 5,
-          loyaltyCoins: 100,
-        },
-      ];
-
-      setCustomers(demoData);
-      setFilteredCustomers(demoData);
+    const fetchCustomers = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get(`/admin/customers?page=${pagination.page}&limit=${pagination.limit}`);
+        setCustomers(response.data.data);
+        setFilteredCustomers(response.data.data);
+        setPagination(response.data.pagination);
+      } catch (err) {
+        console.error('Failed to fetch customers:', err);
+        setError('Failed to load customers. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchCustomers();
-  }, []);
+  }, [pagination.page, pagination.limit]);
 
   useEffect(() => {
-    // Filter customers based on search term and status
-    const filtered = customers.filter((customer) => {
-      const matchesSearch = customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           customer.email.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesStatus = statusFilter === 'all' || customer.status === statusFilter;
-      
-      return matchesSearch && matchesStatus;
+    // Filter customers based on search term
+    const filtered = customers.filter(customer => {
+      const fullName = `${customer.fristName} ${customer.lastName}`;
+      return (
+        fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.phoneNumber.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     });
     
     setFilteredCustomers(filtered);
-  }, [searchTerm, statusFilter, customers]);
+  }, [searchTerm, customers]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= pagination.totalPages) {
+      setPagination(prev => ({ ...prev, page: newPage }));
+    }
+  };
 
   const handleViewCustomer = (customer: Customer) => {
     setSelectedCustomer(customer);
   };
 
-  const handleStatusChange = (customerId: string, newStatus: 'active' | 'inactive') => {
-    const updatedCustomers = customers.map(customer => 
-      customer.id === customerId ? { ...customer, status: newStatus } : customer
-    );
-    
-    setCustomers(updatedCustomers);
-    
-    if (selectedCustomer && selectedCustomer.id === customerId) {
-      setSelectedCustomer({ ...selectedCustomer, status: newStatus });
+  const handleStatusChange = async (customerId: string, isActive: boolean) => {
+    try {
+      // In a real implementation, you would call an API endpoint here
+      // await api.put(`/admin/customers/${customerId}/status`, { isActive });
+      
+      // Update local state
+      const updatedCustomers = customers.map(customer => 
+        customer.id === customerId ? { ...customer, isActive } : customer
+      );
+      
+      setCustomers(updatedCustomers);
+      setFilteredCustomers(updatedCustomers);
+      
+      if (selectedCustomer && selectedCustomer.id === customerId) {
+        setSelectedCustomer({ ...selectedCustomer, isActive });
+      }
+    } catch (err) {
+      console.error('Failed to update customer status:', err);
+      setError('Failed to update customer status. Please try again.');
     }
   };
 
-  const handleCloseDetails = () => {
-    setSelectedCustomer(null);
+  const handleCloseDetails = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      setSelectedCustomer(null);
+    }
   };
 
-  const getStatusBadgeClass = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'inactive':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
+  const getStatusBadgeClass = (isActive: boolean) => {
+    return isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
   };
 
   const formatDate = (dateString: string) => {
@@ -140,6 +125,22 @@ export default function Customers() {
       day: 'numeric'
     });
   };
+
+  if (loading && customers.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#EF7D35]"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 text-red-600 p-4 rounded-md text-center my-6">
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -156,20 +157,20 @@ export default function Customers() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
             <Input
-              placeholder="Search by name or email"
+              placeholder="Search by name, email or phone"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
             />
           </div>
           <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            value={pagination.limit}
+            onChange={(e) => setPagination(prev => ({ ...prev, limit: Number(e.target.value), page: 1 }))}
             className="h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <option value="5">5 per page</option>
+            <option value="10">10 per page</option>
+            <option value="20">20 per page</option>
           </select>
         </div>
 
@@ -181,7 +182,7 @@ export default function Customers() {
                 <th className="text-left py-3 px-4 font-medium">Email</th>
                 <th className="text-left py-3 px-4 font-medium">Registration Date</th>
                 <th className="text-left py-3 px-4 font-medium">Status</th>
-                <th className="text-left py-3 px-4 font-medium">Transactions</th>
+                <th className="text-left py-3 px-4 font-medium">Phone</th>
                 <th className="text-right py-3 px-4 font-medium">Actions</th>
               </tr>
             </thead>
@@ -189,15 +190,15 @@ export default function Customers() {
               {filteredCustomers.length > 0 ? (
                 filteredCustomers.map((customer) => (
                   <tr key={customer.id} className="border-b hover:bg-gray-50">
-                    <td className="py-3 px-4">{customer.name}</td>
+                    <td className="py-3 px-4">{`${customer.fristName} ${customer.lastName}`}</td>
                     <td className="py-3 px-4">{customer.email}</td>
-                    <td className="py-3 px-4">{formatDate(customer.registrationDate)}</td>
+                    <td className="py-3 px-4">{formatDate(customer.createdAt)}</td>
                     <td className="py-3 px-4">
-                      <span className={`inline-block px-2 py-1 rounded-full text-xs ${getStatusBadgeClass(customer.status)}`}>
-                        {customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
+                      <span className={`inline-block px-2 py-1 rounded-full text-xs ${getStatusBadgeClass(customer.isActive)}`}>
+                        {customer.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </td>
-                    <td className="py-3 px-4">{customer.totalTransactions}</td>
+                    <td className="py-3 px-4">{customer.phoneNumber}</td>
                     <td className="py-3 px-4 text-right">
                       <Button 
                         variant="ghost" 
@@ -221,16 +222,50 @@ export default function Customers() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        <div className="flex items-center justify-between mt-4">
+          <div className="text-sm text-gray-500">
+            Showing {filteredCustomers.length > 0 ? (pagination.page - 1) * pagination.limit + 1 : 0} to{' '}
+            {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} customers
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(pagination.page - 1)}
+              disabled={pagination.page === 1}
+            >
+              <ChevronLeft size={16} className="mr-1" />
+              Previous
+            </Button>
+            <span className="px-3 py-1 text-sm">
+              Page {pagination.page} of {pagination.totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(pagination.page + 1)}
+              disabled={pagination.page === pagination.totalPages}
+            >
+              Next
+              <ChevronRight size={16} className="ml-1" />
+            </Button>
+          </div>
+        </div>
       </Card>
 
       {/* Customer Details Modal */}
       {selectedCustomer && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" 
+          onClick={handleCloseDetails}
+        >
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold">Customer Details</h2>
-                <Button variant="ghost" size="sm" onClick={handleCloseDetails}>
+                <Button variant="ghost" size="sm" onClick={() => setSelectedCustomer(null)}>
                   <XCircle size={20} />
                 </Button>
               </div>
@@ -241,7 +276,7 @@ export default function Customers() {
                   <div className="space-y-3">
                     <div>
                       <p className="text-sm text-gray-500">Full Name</p>
-                      <p className="font-medium">{selectedCustomer.name}</p>
+                      <p className="font-medium">{`${selectedCustomer.fristName} ${selectedCustomer.lastName}`}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Email Address</p>
@@ -249,45 +284,49 @@ export default function Customers() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Phone Number</p>
-                      <p className="font-medium">{selectedCustomer.phone}</p>
+                      <p className="font-medium">{selectedCustomer.phoneNumber}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Registration Date</p>
-                      <p className="font-medium">{formatDate(selectedCustomer.registrationDate)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Status</p>
-                      <p className={`inline-block px-2 py-1 rounded-full text-xs ${getStatusBadgeClass(selectedCustomer.status)}`}>
-                        {selectedCustomer.status.charAt(0).toUpperCase() + selectedCustomer.status.slice(1)}
-                      </p>
+                      <p className="text-sm text-gray-500">State</p>
+                      <p className="font-medium">{selectedCustomer.state}</p>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold mb-4">Activity Information</h3>
+                  <h3 className="font-semibold mb-4">Account Information</h3>
                   <div className="space-y-3">
                     <div>
-                      <p className="text-sm text-gray-500">Total Transactions</p>
-                      <p className="font-medium">{selectedCustomer.totalTransactions}</p>
+                      <p className="text-sm text-gray-500">Registration Date</p>
+                      <p className="font-medium">{formatDate(selectedCustomer.createdAt)}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Loyalty Coins</p>
-                      <p className="font-medium">{selectedCustomer.loyaltyCoins}</p>
+                      <p className="text-sm text-gray-500">Status</p>
+                      <p className={`inline-block px-2 py-1 rounded-full text-xs ${getStatusBadgeClass(selectedCustomer.isActive)}`}>
+                        {selectedCustomer.isActive ? 'Active' : 'Inactive'}
+                      </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Last Activity</p>
-                      <p className="font-medium">3 days ago</p>
+                      <p className="text-sm text-gray-500">NIN Verification</p>
+                      <p className="font-medium">
+                        {selectedCustomer.isNinVerified ? 'Verified' : 'Not Verified'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Account Status</p>
+                      <p className="font-medium">
+                        {selectedCustomer.isDeactivated ? 'Deactivated' : 'Active'}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="border-t pt-6 flex justify-end gap-3">
-                {selectedCustomer.status === 'active' ? (
+                {/* {selectedCustomer.isActive ? (
                   <Button 
                     variant="outline" 
-                    onClick={() => handleStatusChange(selectedCustomer.id, 'inactive')}
+                    onClick={() => handleStatusChange(selectedCustomer.id, false)}
                     className="border-red-300 text-red-600 hover:bg-red-50"
                   >
                     <XCircle size={18} className="mr-1" />
@@ -295,13 +334,13 @@ export default function Customers() {
                   </Button>
                 ) : (
                   <Button 
-                    onClick={() => handleStatusChange(selectedCustomer.id, 'active')}
+                    onClick={() => handleStatusChange(selectedCustomer.id, true)}
                     className="bg-[#EF7D35] hover:bg-[#EF7D35]/90 text-white"
                   >
                     <CheckCircle size={18} className="mr-1" />
                     Activate
                   </Button>
-                )}
+                )} */}
               </div>
             </div>
           </div>
