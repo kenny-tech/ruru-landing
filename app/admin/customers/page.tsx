@@ -42,6 +42,7 @@ export default function Customers() {
     totalPages: 1
   });
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [statusLoading, setStatusLoading] = useState(false);
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -88,8 +89,13 @@ export default function Customers() {
 
   const handleStatusChange = async (customerId: string, isActive: boolean) => {
     try {
-      // In a real implementation, you would call an API endpoint here
-      // await api.put(`/admin/customers/${customerId}/status`, { isActive });
+      setStatusLoading(true);
+      
+      // Call the activation/deactivation endpoint
+      await api.patch('/user/activate-deactivate', {
+        userId: customerId,
+        status: isActive
+      });
       
       // Update local state
       const updatedCustomers = customers.map(customer => 
@@ -105,6 +111,8 @@ export default function Customers() {
     } catch (err) {
       console.error('Failed to update customer status:', err);
       setError('Failed to update customer status. Please try again.');
+    } finally {
+      setStatusLoading(false);
     }
   };
 
@@ -323,24 +331,44 @@ export default function Customers() {
               </div>
 
               <div className="border-t pt-6 flex justify-end gap-3">
-                {/* {selectedCustomer.isActive ? (
+                {selectedCustomer.isActive ? (
                   <Button 
                     variant="outline" 
                     onClick={() => handleStatusChange(selectedCustomer.id, false)}
                     className="border-red-300 text-red-600 hover:bg-red-50"
+                    disabled={statusLoading}
                   >
-                    <XCircle size={18} className="mr-1" />
-                    Deactivate
+                    {statusLoading ? (
+                      <span className="flex items-center">
+                        <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600 mr-2"></span>
+                        Processing...
+                      </span>
+                    ) : (
+                      <>
+                        <XCircle size={18} className="mr-1" />
+                        Deactivate
+                      </>
+                    )}
                   </Button>
                 ) : (
                   <Button 
                     onClick={() => handleStatusChange(selectedCustomer.id, true)}
                     className="bg-[#EF7D35] hover:bg-[#EF7D35]/90 text-white"
+                    disabled={statusLoading}
                   >
-                    <CheckCircle size={18} className="mr-1" />
-                    Activate
+                    {statusLoading ? (
+                      <span className="flex items-center">
+                        <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
+                        Processing...
+                      </span>
+                    ) : (
+                      <>
+                        <CheckCircle size={18} className="mr-1" />
+                        Activate
+                      </>
+                    )}
                   </Button>
-                )} */}
+                )}
               </div>
             </div>
           </div>

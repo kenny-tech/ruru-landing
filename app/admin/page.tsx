@@ -36,6 +36,8 @@ export default function AdminLogin() {
         password,
       });
 
+      console.log('response: ', response);
+
       // Store token and user data
       localStorage.setItem('authToken', response.data.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.data.user));

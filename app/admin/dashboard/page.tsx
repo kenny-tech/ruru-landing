@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Truck, Users, FileText } from 'lucide-react';
-import api from '@/lib/api';
+import { Truck, Users, FileText, TrendingUp } from 'lucide-react';
 
 interface StatCardProps {
   title: string;
@@ -11,12 +10,6 @@ interface StatCardProps {
   description: string;
   icon: React.ReactNode;
   color: string;
-}
-
-interface CountsData {
-  totalCouriers: number;
-  totalRiders: number;
-  totalCustomers: number;
 }
 
 const StatCard = ({ title, value, description, icon, color }: StatCardProps) => (
@@ -37,46 +30,27 @@ const StatCard = ({ title, value, description, icon, color }: StatCardProps) => 
 );
 
 export default function Dashboard() {
-  const [stats, setStats] = useState<CountsData>({
-    totalCouriers: 0,
-    totalRiders: 0,
-    totalCustomers: 0
+  const [stats, setStats] = useState({
+    couriers: 0,
+    riders: 0,
+    customers: 0,
+    transactions: 0
   });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchCounts = async () => {
-      try {
-        setLoading(true);
-        const response = await api.get('/admin/users/counts');
-        setStats(response.data.data);
-      } catch (err) {
-        console.error('Failed to fetch counts:', err);
-        setError('Failed to load dashboard data. Please try again.');
-      } finally {
-        setLoading(false);
-      }
+    // Simulate fetching data
+    const fetchData = () => {
+      // Demo data
+      setStats({
+        couriers: 24,
+        riders: 156,
+        customers: 1250,
+        transactions: 3567
+      });
     };
 
-    fetchCounts();
+    fetchData();
   }, []);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#EF7D35]"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-red-50 text-red-600 p-4 rounded-md text-center my-6">
-        {error}
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -95,25 +69,32 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <StatCard
           title="Total Couriers"
-          value={stats.totalCouriers}
+          value={stats.couriers}
           description="Active courier companies"
           icon={<Truck size={24} className="text-white" />}
           color="bg-[#EF7D35]"
         />
         <StatCard
           title="Total Riders"
-          value={stats.totalRiders}
+          value={stats.riders}
           description="Registered courier riders"
           icon={<Users size={24} className="text-white" />}
           color="bg-[#7A315F]"
         />
         <StatCard
           title="Total Customers"
-          value={stats.totalCustomers}
+          value={stats.customers}
           description="Registered app users"
           icon={<Users size={24} className="text-white" />}
           color="bg-blue-500"
         />
+        {/* <StatCard
+          title="Total Transactions"
+          value={stats.transactions}
+          description="Completed deliveries"
+          icon={<FileText size={24} className="text-white" />}
+          color="bg-green-500"
+        /> */}
       </div>
     </div>
   );

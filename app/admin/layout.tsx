@@ -52,6 +52,7 @@ export default function AdminLayout({
 }>) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -64,7 +65,7 @@ export default function AdminLayout({
     
     // Check if user is authenticated for protected pages
     if (shouldShowSidebar) {
-      const authData = localStorage.getItem('ruruAdminAuth');
+      const authData = localStorage.getItem('authToken');
       if (!authData) {
         router.push('/admin');
       }
@@ -72,8 +73,9 @@ export default function AdminLayout({
   }, [router, shouldShowSidebar]);
 
   const handleLogout = () => {
-    localStorage.removeItem('ruruAdminAuth');
+    localStorage.removeItem('authToken');
     router.push('/admin');
+    setShowLogoutModal(false);
   };
 
   // Don't render anything on the server to prevent hydration errors
@@ -85,9 +87,8 @@ export default function AdminLayout({
     { href: '/admin/customers', icon: <Users size={20} />, label: 'Customers' },
     { href: '/admin/riders', icon: <Users size={20} />, label: 'Riders' },
     { href: '/admin/transactions', icon: <FileText size={20} />, label: 'Transactions' },
-    // { href: '/admin/create-admin', icon: <UserPlus size={20} />, label: 'Create Admin' },
     { href: '/admin/settings', icon: <Settings size={20} />, label: 'Settings' },
-    { href: '', icon: <LogOut size={20} />, label: 'Logout' },
+    { href: '#', icon: <LogOut size={20} />, label: 'Logout', onClick: () => setShowLogoutModal(true) },
   ];
 
   // For pages without sidebar (login, forgot password)
@@ -153,20 +154,13 @@ export default function AdminLayout({
                 icon={item.icon}
                 label={item.label}
                 active={pathname === item.href}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  if (item.onClick) item.onClick();
+                }}
               />
             ))}
           </nav>
-
-          {/* Logout button */}
-          {/* <Button 
-            variant="ghost" 
-            className="mt-auto flex items-center gap-3 justify-start text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-            onClick={handleLogout}
-          >
-            <LogOut size={20} />
-            <span>Logout</span>
-          </Button> */}
         </div>
       </aside>
 
@@ -174,6 +168,32 @@ export default function AdminLayout({
       <main className="flex-1 p-4 md:p-6 overflow-auto">
         {children}
       </main>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="space-y-4">
+              <h2 className="text-xl font-bold">Confirm Logout</h2>
+              <p>Are you sure you want to log out?</p>
+              <div className="flex justify-end gap-3">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowLogoutModal(false)}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  className="bg-[#EF7D35] hover:bg-[#EF7D35]/90 text-white"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
