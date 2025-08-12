@@ -82,7 +82,7 @@ export default function AdminLogin() {
               type="text"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
-              placeholder="veleho813@inboxbear.com"
+              placeholder="Enter your email"
               required
             />
           </div>
@@ -100,7 +100,7 @@ export default function AdminLogin() {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder="Enter your password"
                 required
               />
               <button
